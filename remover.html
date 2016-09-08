@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+<meta charset="utf-8">
+<title>http Remover</title>
+<style type="text/css">
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+
+#mainContent {
+	height: 95%;
+	padding: 0;
+	margin: 0;
+	background-color: black;
+}
+
+.box {
+	height: 100%;
+	width: 50%;
+	margin: 0;
+	padding: 10px;
+	box-sizing: border-box;
+	float: left;
+}
+
+#remove {
+	height: 5%;
+	width: 100%;
+	background-color: #73C076;
+}
+
+</style>
+</head>
+
+<body>
+<div id="mainContent">
+	<textarea id="urls" class="box" type="text" placeholder="Introduce the URLs"></textarea>
+	<textarea id="results" class="box" type="text" placeholder="Results"></textarea> 
+	<input id="remove" type="submit" value="Remove"/>
+</div>
+<script>
+
+var remove = document.getElementById('remove');
+var results_array = [];
+
+	remove.addEventListener('click', function() {
+		var urls = document.getElementById('urls').value;
+		urls = urls.replace(/[\n\r ]/g, ",");
+		urls = urls.split(",");
+		
+		for(var i=0; i<urls.length; ++i) {
+			var first_occ = (urls[i].indexOf("//") === -1) ? 0 : (urls[i].indexOf("//") + 2);
+			var last_occ = (urls[i].lastIndexOf("/") === (urls[i].length - 1)) ? (urls[i].length - 1) : urls[i].length;
+			urls[i] = urls[i].substring(first_occ, last_occ);
+		}
+		
+		console.log(urls);
+		document.getElementById('results').innerHTML = urls;
+})
+	
+</script>
+
+</body>
+</html>
