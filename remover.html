@@ -11,8 +11,12 @@ html, body {
 	height: 100%;
 }
 
+.break {
+	clear: both;
+}
+
 #mainContent {
-	height: 95%;
+	height: 100%;
 	padding: 0;
 	margin: 0;
 	background-color: black;
@@ -20,17 +24,40 @@ html, body {
 
 .box {
 	height: 100%;
-	width: 50%;
+	width: 45%;
 	margin: 0;
 	padding: 10px;
 	box-sizing: border-box;
 	float: left;
+	resize: none;
 }
 
 #remove {
 	height: 5%;
 	width: 100%;
-	background-color: #73C076;
+	background-color: #8AB86B;
+	/*border: none;*/
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+
+#remove2 {
+	height: 5%;
+	width: 100%;
+	background-color: #8AB86B;
+	/*border: none;*/
+	position: absolute;
+	bottom: 50px;
+	left: 0;
+}
+
+#control {
+	width: 10%;
+	height: 100%;
+	float: right;
+	background-color: #C9DEC4;
+	position: relative;
 }
 
 </style>
@@ -39,28 +66,66 @@ html, body {
 <body>
 <div id="mainContent">
 	<textarea id="urls" class="box" type="text" placeholder="Introduce the URLs"></textarea>
-	<textarea id="results" class="box" type="text" placeholder="Results"></textarea> 
+	<textarea id="results" class="box" type="text" placeholder="Results"></textarea>
+	<div id="control">
+	<input type="checkbox" name="checkbox" value="column">Organize by columns<br>
+	<input type="checkbox" name="checkbox" value="quotes">Add quotes to each domain<br>
 	<input id="remove" type="submit" value="Remove"/>
+	</div>
+	
+	<div class="clear"></div>
+	
 </div>
+	
 <script>
 
 var remove = document.getElementById('remove');
-var results_array = [];
+var column = document.getElementsByName("checkbox")[0];
+var quotes = document.getElementsByName("checkbox")[1];
 
-	remove.addEventListener('click', function() {
-		var urls = document.getElementById('urls').value;
-		urls = urls.replace(/[\n\r ]/g, ",");
-		urls = urls.split(",");
-		
-		for(var i=0; i<urls.length; ++i) {
-			var first_occ = (urls[i].indexOf("//") === -1) ? 0 : (urls[i].indexOf("//") + 2);
-			var last_occ = (urls[i].lastIndexOf("/") === (urls[i].length - 1)) ? (urls[i].length - 1) : urls[i].length;
-			urls[i] = urls[i].substring(first_occ, last_occ);
-		}
-		
-		console.log(urls);
-		document.getElementById('results').innerHTML = urls;
+function remove_http(urls) {
+	urls = urls.replace(/[\n\r ]/g, ",");
+	urls = urls.split(",");
+	
+	for(var i=0; i<urls.length; ++i) {
+		var first_occ = (urls[i].indexOf("//") === -1) ? 0 : (urls[i].indexOf("//") + 2);
+		var last_occ = (urls[i].lastIndexOf("/") === (urls[i].length - 1)) ? (urls[i].length - 1) : urls[i].length;
+		urls[i] = urls[i].substring(first_occ, last_occ);
+	}
+	
+	return urls;
+}
+
+function remove_duplicates(urls) {
+	var filtered_urls = urls.filter(function(url, index) {       
+    	return urls.indexOf(url) == index;
+    })
+    
+    //Array of filtered URLs. No duplicates
+    var removed_urls = urls.length - filtered_urls.length;
+    console.log("Removed " + removed_urls + " duplicate URLs.");
+    console.log(filtered_urls);
+    return filtered_urls;
+}
+
+
+remove.addEventListener('click', function() {
+	var urls = document.getElementById('urls').value;
+	urls = remove_http(urls);									//removing http:// and https://
+    urls = remove_duplicates(urls);								//removing duplicates
+    document.getElementById('results').innerHTML = quotes.checked ? ("\'" + urls.join("','") + "\'") : urls;
+    //console.log(urls);
+    
+    if(column.checked) {
+    	var result = urls[0] + "\n";
+    	for(var i=0; i<urls.length; ++i) {
+    		//console.log(i + ".-" + urls[i])
+    		result = result + urls[i] + "\n";
+    	}
+    	document.getElementById('results').innerHTML = result;
+    }
 })
+
 	
 </script>
 
