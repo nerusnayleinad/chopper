@@ -1,0 +1,73 @@
+* {
+    -webkit-text-size-adjust: none;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+
+.break {
+	clear: both;
+}
+
+#mainContent {
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	background-color: black;
+}
+
+.box {
+	height: 100%;
+	width: 45%;
+	margin: 0;
+	padding: 10px;
+	box-sizing: border-box;
+	float: left;
+	resize: none;
+}
+
+#remove {
+	height: 5%;
+	width: 100%;
+	background-color: #8AB86B;
+	/*border: none;*/
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+
+#remove2 {
+	height: 5%;
+	width: 100%;
+	background-color: #8AB86B;
+	/*border: none;*/
+	position: absolute;
+	bottom: 50px;
+	left: 0;
+}
+
+#control_container {
+	width: 10%;
+	height: 100%;
+	float: right;
+	background-color: #C9DEC4;
+	position: relative;
+}
+
+#control_settings {
+    margin: 8px 5px;
+    font-family: "Courier New", monospace;
+    font-size: 14px;
+}
+
+input[type=radio] {
+    width: 18px;
+    height: 18px;
+    vertical-align: bottom;
+}
+
+.output_options {
+}
