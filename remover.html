@@ -15,9 +15,16 @@
 	<textarea id="results" class="box" type="text" placeholder="Results"></textarea>
 	<div id="control_container">
 		<div id="control_settings">
-			<input type="radio" name="radio" value="column" checked="checked">Remove http/https<br>
+			<input type="radio" name="radio" value="remove" checked="checked">Remove http/https<br>
 			<input type="radio" name="radio" value="column">Organize by columns<br>
 			<input type="radio" name="radio" value="quotes">Add quotes to each domain<br>
+		</div>
+		
+		<div id="duplicates_status_container">
+			<h4>Status</h4>
+			<textarea id="status" class="duplicates_status" type="text" placeholder="Status"></textarea>
+			<h4>Duplicates</h4>
+			<textarea id="duplicates" class="duplicates_status" type="text" placeholder="Duplicates"></textarea>
 		</div>
 	<input id="remove" type="submit" value="Go!"/>
 	</div>
