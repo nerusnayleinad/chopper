@@ -21,15 +21,19 @@ function remove_http(urls) {
 }
 
 function remove_duplicates(urls) {
-	var filtered_urls = urls.filter(function(url, index) {       
+    var removed_urls = [];
+	var filtered_urls = urls.filter(function(url, index) {
+	    if(urls.indexOf(url) != index) {
+	        removed_urls.push(url);   
+	    }
     	return urls.indexOf(url) == index;
     })
     
     //Array of filtered URLs. No duplicates
-    var removed_urls = urls.length - filtered_urls.length;
-    resume.innerHTML = "Removed " + removed_urls + " duplicates." + "\n" +
+    resume.innerHTML = "Removed " + removed_urls.length + " duplicates." + "\n" +
                        "Filtered " + filtered_urls.length + " URLs.";
-    duplicates.innerHTML = filtered_urls.join("\n");
+                       
+    duplicates.innerHTML = removed_urls.join("\n");
     //console.log("Removed " + removed_urls + " duplicate URLs.");
     //console.log(filtered_urls);
     return filtered_urls;
@@ -43,12 +47,12 @@ function check_checked_radio() {
     }
 }
 
-
 go.addEventListener('click', function() {
 	var urls = input_urls.value;
 	urls = remove_http(urls);									//removing http:// and https://
     urls = remove_duplicates(urls);								//removing duplicates
     
+    //var duplicate_urls = [];
     //results.innerHTML = quotes.checked ? ("\'" + urls.join("','") + "\'") : urls;
     //results.innerHTML = column.checeked ? urls.join("\n") : urls;
     
