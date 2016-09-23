@@ -23,10 +23,12 @@ function remove_http(urls) {
 function remove_duplicates(urls) {
     var removed_urls = [];
 	var filtered_urls = urls.filter(function(url, index) {
-	    if(urls.indexOf(url) != index) {
-	        removed_urls.push(url);   
+	    if(url === ''){
+	        return false;
 	    }
-    	return urls.indexOf(url) == index;
+	    
+        //return (urls.indexOf(url) != index) ? (() => {removed_urls.push(url); return false})() : (urls.indexOf(url) == index);            //https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/Arrow_functions
+        return urls.indexOf(url) != index ? (removed_urls.push(url) == -1) : (urls.indexOf(url) == index);
     })
     
     //Array of filtered URLs. No duplicates
@@ -34,8 +36,6 @@ function remove_duplicates(urls) {
                        "Filtered " + filtered_urls.length + " URLs.";
                        
     duplicates.innerHTML = removed_urls.join("\n");
-    //console.log("Removed " + removed_urls + " duplicate URLs.");
-    //console.log(filtered_urls);
     return filtered_urls;
 }
 
@@ -49,6 +49,11 @@ function check_checked_radio() {
 
 go.addEventListener('click', function() {
 	var urls = input_urls.value;
+	if(urls === '') {
+	    resume.innerHTML = "No URLs found."
+	    return
+	}
+	
 	urls = remove_http(urls);									//removing http:// and https://
     urls = remove_duplicates(urls);								//removing duplicates
     
