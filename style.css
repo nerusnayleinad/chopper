@@ -74,12 +74,12 @@ input[type=radio] {
 }
 
 #status {
-	height: 10%;
+	height: 20%;
 	width: 100%;
 }
 
 #duplicates {
-	height: 90%;
+	height: 80%;
 	width: 100%;
 }
 

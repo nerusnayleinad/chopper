@@ -6,6 +6,28 @@ var column = document.getElementsByName("radio")[1];
 var quotes = document.getElementsByName("radio")[2];
 var resume = document.getElementById("status");
 var duplicates = document.getElementById("duplicates");
+var report_details = { removed_urls: 0, removed_private_net: 0, filtered_urls: 0 };         //object that contains the summary of the operation
+
+function report() {
+    //Array of filtered URLs. No duplicates
+   resume.innerHTML = "Removed " + report_details["removed_urls"] + " duplicates." + "\n" +
+                      "Removed " + report_details["removed_private_net"] + " private IPs and localhost." + "\n" +
+                      "Filtered " + report_details["filtered_urls"] + " URLs.";
+}
+
+function filter_local_machine(urls) {
+    var removed_local_urls = [];
+    //urls.forEach(function(url, index) {
+    for(var i = urls.length - 1; i >= 0; --i) {
+        if(urls[i] == "127.0.0.1" || urls[i] == "localhost" || urls[i].startsWith("192.168.")) {
+            removed_local_urls.push(urls[i]);
+            urls.splice(i, 1);
+        }
+    }
+
+    report_details["removed_private_net"] = removed_local_urls.length;
+    return urls;
+}
 
 function remove_http(urls) {
 	urls = urls.replace(/[\n\r ]/g, ",");
@@ -16,7 +38,7 @@ function remove_http(urls) {
 		var last_occ = (urls[i].lastIndexOf("/") === (urls[i].length - 1)) ? (urls[i].length - 1) : urls[i].length;
 		urls[i] = urls[i].substring(first_occ, last_occ);
 	}
-	
+	//console.log(urls);
 	return urls;
 }
 
@@ -31,9 +53,8 @@ function remove_duplicates(urls) {
         return urls.indexOf(url) != index ? (removed_urls.push(url) == -1) : (urls.indexOf(url) == index);
     })
     
-    //Array of filtered URLs. No duplicates
-    resume.innerHTML = "Removed " + removed_urls.length + " duplicates." + "\n" +
-                       "Filtered " + filtered_urls.length + " URLs.";
+    report_details["removed_urls"] = removed_urls.length;
+    report_details["filtered_urls"] = filtered_urls.length;
                        
     duplicates.innerHTML = removed_urls.join("\n");
     return filtered_urls;
@@ -55,7 +76,11 @@ go.addEventListener('click', function() {
 	}
 	
 	urls = remove_http(urls);									//removing http:// and https://
+	urls = filter_local_machine(urls);
     urls = remove_duplicates(urls);								//removing duplicates
+    
+    report();
+    
     
     //var duplicate_urls = [];
     //results.innerHTML = quotes.checked ? ("\'" + urls.join("','") + "\'") : urls;
