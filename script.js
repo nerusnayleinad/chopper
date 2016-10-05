@@ -19,7 +19,7 @@ function filter_local_machine(urls) {
     var removed_local_urls = [];
     //urls.forEach(function(url, index) {
     for(var i = urls.length - 1; i >= 0; --i) {
-        if(urls[i] == "127.0.0.1" || urls[i] == "localhost" || urls[i].startsWith("192.168.")) {
+        if(urls[i].startsWith("127.") || urls[i].startsWith("localhost") || urls[i].startsWith("192.168.")) {
             removed_local_urls.push(urls[i]);
             urls.splice(i, 1);
         }
