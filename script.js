@@ -7,6 +7,36 @@ var quotes = document.getElementsByName("radio")[2];
 var resume = document.getElementById("status");
 var duplicates = document.getElementById("duplicates");
 var report_details = { removed_urls: 0, removed_private: 0, filtered_urls: 0 };         //object that contains the summary of the operation
+var blacklisted_domains = [];
+var google_domains = [];
+
+$(document).ready(function() {
+        $.ajax({
+            type: "GET",
+            url: "blacklisted_domains.csv",                  //parses to string
+            success: function (data, status) { 
+                blacklisted_domains = data.split(",\n");
+            },
+            error: function(errno, status) {
+                console.log("Error occurred: " + status);
+            }
+        }); 
+        
+        $.ajax({
+            type: "GET",
+            url: "google_domains.csv",                  //parses to string
+            success: function (data, status) { 
+                google_domains = data.split(",\n");
+            },
+            error: function(errno, status) {
+                console.log("Error occurred: " + status);
+            }
+        }); 
+})
+
+function process_data(data) {
+    console.log(data);
+}
 
 function report() {
     //Array of filtered URLs. No duplicates
@@ -29,11 +59,12 @@ function filter_local_machine(urls) {
             }
         }
         else
-            if(urls[i].startsWith("10.") || 
+            if(urls[i].startsWith("0.") ||
+               urls[i].startsWith("10.") || 
                urls[i].startsWith("127.") || 
                urls[i].startsWith("192.168.") ||
                urls[i].startsWith("localhost") ||
-               urls[i].includes("google.com")) {
+               urls[i].startsWith("intranet")) {
                    
                 removed_local_urls.push(urls[i]);
                 urls.splice(i, 1);
@@ -56,6 +87,40 @@ function remove_http(urls) {
 	//console.log(urls);
 	return urls;
 }
+
+
+/*function remove_blacklisted_domains (urls) {
+    urls = urls.filter(function(url) {
+      return blacklisted_domains.indexOf(url) < 0;
+    } );
+    return urls;
+}*/
+
+
+/*
+function remove_blacklisted_domains (urls) {
+    urls = urls.filter(function(url, index) {
+        return blacklisted_domains.indexOf(url) === -1;    
+    });
+    return urls;
+}
+*/
+
+//////////////////FIX THIS SHIT/////////////////////DONE
+
+function remove_blacklisted_domains (urls) {
+    urls = urls.filter(function(url) {
+        for(var i=0; i<blacklisted_domains.length; ++i) {
+            if(url.indexOf(blacklisted_domains[i]) !== -1)
+            break;
+                else if(i === blacklisted_domains.length - 1)
+                return true;
+        }
+    })
+    console.log(urls);
+    return urls;
+}
+
 
 function remove_duplicates(urls) {
     var removed_urls = [];
@@ -92,6 +157,7 @@ go.addEventListener('click', function() {
 	
 	urls = remove_http(urls);									//removing http:// and https://
 	urls = filter_local_machine(urls);
+	urls = remove_blacklisted_domains(urls);
     urls = remove_duplicates(urls);								//removing duplicates
     
     report();
@@ -117,3 +183,9 @@ go.addEventListener('click', function() {
             break;
     }
 })
+
+/*
+setTimeout(function() {
+    remove_blacklisted_domains(["google.com", "hola.com"]);
+}, 100);
+*/
