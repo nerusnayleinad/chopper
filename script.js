@@ -6,7 +6,7 @@ var column = document.getElementsByName("radio")[1];
 var quotes = document.getElementsByName("radio")[2];
 var resume = document.getElementById("status");
 var duplicates = document.getElementById("duplicates");
-var report_details = { removed_urls: 0, removed_private: 0, filtered_urls: 0 };         //object that contains the summary of the operation
+var report_details = { removed_urls: 0, removed_private: 0, filtered_urls: 0, blacklisted_domains: 0 };         //object that contains the summary of the operation
 var blacklisted_domains = [];
 var google_domains = [];
 
@@ -18,20 +18,9 @@ $(document).ready(function() {
                 blacklisted_domains = data.split(",\n");
             },
             error: function(errno, status) {
-                console.log("Error occurred: " + status);
+                console.log("Error occurred: " + errno);
             }
-        }); 
-        
-        $.ajax({
-            type: "GET",
-            url: "google_domains.csv",                  //parses to string
-            success: function (data, status) { 
-                google_domains = data.split(",\n");
-            },
-            error: function(errno, status) {
-                console.log("Error occurred: " + status);
-            }
-        }); 
+        });
 })
 
 function process_data(data) {
@@ -42,13 +31,14 @@ function report() {
     //Array of filtered URLs. No duplicates
    resume.innerHTML = "Removed " + report_details["removed_urls"] + " duplicates." + "\n" +
                       "Removed " + report_details["removed_private"] + " private IPs/networks." + "\n" +
+                      "Removed " + report_details["blacklisted_domains"] + " blacklisted domains." + "\n" +
                       "Filtered " + report_details["filtered_urls"] + " URLs." + "\n"; 
 }
 
 function filter_local_machine(urls) {
     var removed_local_urls = [];
     var second_octet;                                               //172.xxx.0.0   second_octet = xxx
-    //urls.forEach(function(url, index) {
+    
     for(var i = urls.length - 1; i >= 0; --i) {
         if(urls[i].startsWith("172.")) {                            //172.16.0.0 to 172.31.255.255 are private networks
             second_octet = urls[i].split(".")[1];
@@ -88,36 +78,21 @@ function remove_http(urls) {
 	return urls;
 }
 
-
-/*function remove_blacklisted_domains (urls) {
-    urls = urls.filter(function(url) {
-      return blacklisted_domains.indexOf(url) < 0;
-    } );
-    return urls;
-}*/
-
-
-/*
+//Removes a domain in case it INCLUDES a domain from the blacklisted domains
+//PROBLEM: it removes google.comiendo -> RESOLVED
 function remove_blacklisted_domains (urls) {
-    urls = urls.filter(function(url, index) {
-        return blacklisted_domains.indexOf(url) === -1;    
-    });
-    return urls;
-}
-*/
-
-//////////////////FIX THIS SHIT/////////////////////DONE
-
-function remove_blacklisted_domains (urls) {
+    var aux = urls.length;
     urls = urls.filter(function(url) {
         for(var i=0; i<blacklisted_domains.length; ++i) {
-            if(url.indexOf(blacklisted_domains[i]) !== -1)
+            //Needs a logic to compare the last chump of the domain
+            //url.substring(url.lastIndexOf(".")) === blacklisted_domains[i].substring(blacklisted_domains[i].lastIndexOf("."))
+            if((url.indexOf(blacklisted_domains[i]) !== -1) && (url.substring(url.lastIndexOf(".")) === blacklisted_domains[i].substring(blacklisted_domains[i].lastIndexOf("."))))
             break;
                 else if(i === blacklisted_domains.length - 1)
                 return true;
         }
     })
-    console.log(urls);
+    report_details["blacklisted_domains"] = aux - urls.length;
     return urls;
 }
 
