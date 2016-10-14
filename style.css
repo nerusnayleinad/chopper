@@ -73,12 +73,12 @@ input[type=radio] {
 	box-sizing: border-box;
 }
 
-#status {
+#summary {
 	height: 20%;
 	width: 100%;
 }
 
-#duplicates {
+#removed_url {
 	height: 80%;
 	width: 100%;
 }
