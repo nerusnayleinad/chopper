@@ -60,8 +60,20 @@ input[type=radio] {
     vertical-align: bottom;
 }
 
+#copy_to_clipboard {
+	font-size: 14px;
+}
+
+#clipboard {
+	margin: 170px 5px 0 10px;
+	background-color: red;
+    width: 16px;
+    height: 16px;
+    vertical-align: bottom;
+}
+
 #duplicates_status_container {
-	height: 70%;
+	height: 65%;
 	margin: 0;
 	padding: 20px 20px 0 20px;
 }
