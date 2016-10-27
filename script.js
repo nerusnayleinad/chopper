@@ -12,7 +12,7 @@ class urls_manager {
         
         $.ajax({
             type: "GET",
-            url: "blacklisted_domains.csv",                  //parses to string
+            url: "files/blacklisted_domains.csv",                  //parses to string
             success: function (data, status) { 
                 blacklisted_domains = data.split(",\n");
             },
