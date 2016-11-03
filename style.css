@@ -18,7 +18,6 @@ html, body {
 	height: 100%;
 	padding: 0;
 	margin: 0;
-	background-color: black;
 }
 
 .box {
@@ -97,4 +96,21 @@ input[type=radio] {
 
 h4 {
 	margin: 10px 0 5px 0;
+	float: left;
+}
+
+#info {
+	float: right;
+	height: 28px;
+	width: 28px;
+}
+
+#warning_message {
+	background-color: #FFC000;
+	position: absolute;
+	right: 50px;
+	padding: 10px 25px;
+	border-radius: 5px;
+	opacity: 1;
+	font-size: 14px;
 }

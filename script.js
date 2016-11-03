@@ -6,6 +6,15 @@ var removed_urls = document.getElementById("removed_urls");
 var clipboard = document.getElementById("clipboard");
 var blacklisted_domains = [];
 
+var removed_duplicate_urls = [];
+var removed_local_urls = [];
+var removed_blacklisted_urls = [];
+var filtered_urls = [];
+
+var interval_id;
+var warning = $("#info");
+var warning_message = $("#warning_message");
+
 class urls_manager {
     constructor(urls) {
         this.urls = urls;
@@ -120,13 +129,29 @@ class urls_manager {
                            
         if(!removed_duplicate_urls.length) removed_duplicate_urls = ["No duplicates..."];
         if(!removed_local_urls.length) removed_local_urls = ["No local addresses..."];
-        if(!removed_blacklisted_urls.length) removed_blacklisted_urls = ["No blacklisted domains..."];
+        if(!removed_blacklisted_urls.length) {
+            removed_blacklisted_urls = ["No blacklisted domains..."];
+            warning.hide();
+        }
+        else
+            warning.show();
                           
         removed_urls.innerHTML = "> Duplicates" + "\n" + removed_duplicate_urls.join("\n") + "\n\n" +
                                  "> Local" + "\n" + removed_local_urls.join("\n") + "\n\n" +
                                  "> Blacklisted" + "\n" + removed_blacklisted_urls.join("\n");
     }
 }
+
+
+warning.on('mouseover', function() {
+    warning_message.slideDown();
+});
+
+
+warning.on('mouseleave', function() {
+    warning_message.slideUp();
+});
+    
 
 function check_checked_radio() {
     var radios = document.getElementsByName("radio");
@@ -143,10 +168,10 @@ function copy_to_clipboard(element) {
 
 
 go.addEventListener('click', function() {
-    var removed_duplicate_urls = [];
-    var removed_local_urls = [];
-    var removed_blacklisted_urls = [];
-    var filtered_urls = [];
+    // var removed_duplicate_urls = [];
+    // var removed_local_urls = [];
+    // var removed_blacklisted_urls = [];
+    // var filtered_urls = [];
 
 	var introduced_urls = input_urls.value;
 	if(introduced_urls === '') {
@@ -187,4 +212,5 @@ go.addEventListener('click', function() {
 
 var urls = new urls_manager();
 
-	
+    
+
